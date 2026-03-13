@@ -129,9 +129,9 @@ Install the following Arduino libraries before compiling:
 
 1. Clone Repository
 
-`ash
-git clone https://github.com/yourusername/smart-helmet-system.git
-`
+```
+git clone https://github.com/AgastyaGupta26/smart-helmet-system.git
+```
 
 2. Open in Arduino IDE
 
