@@ -1,93 +1,187 @@
-# Smart Helmet For Bike Riders
+﻿# Smart Helmet for Bike Riders
 
-A two-module IoT safety system for bike riders.
+An IoT-based safety system for motorcycle riders that detects accidents and alcohol consumption and automatically alerts the vehicle system to stop the engine.
 
-- **Sender Helmet** (Module A): ESP32-based sensor pack that detects crashes and alcohol level with MPU-6050 and MQ-3, then sends UDP alerts.
-- **Receiver Helmet** (Module B): ESP32-based receiver that listens for UDP alerts and displays warnings.
+This project was developed using ESP32 microcontrollers, sensors, and wireless communication to improve rider safety.
 
-## Features
+## 🚀 Features
 
-- Shake/crash detection via MPU-6050 (accelerometer + gyroscope)
-- Alcohol detection via MQ-3 analog sensor
-- Wi-Fi UDP alert transport
-- Visual/serial feedback on board LED and Serial Monitor
-- Alert cooldown logic to avoid floods (5 seconds)
+- Detects bike crashes using MPU6050 accelerometer
+- Detects alcohol consumption using MQ-3 sensor
+- Wireless communication via WiFi (UDP protocol)
+- Automatic engine stop simulation using servo motor
+- Real-time alerts displayed on LCD
+- Buzzer alert system
+- LED indicators for crash and alcohol alerts
+- Automatic engine resume after emergency timeout
 
-## Folder Structure
+## 🧠 System Architecture
 
-- `Sender Helmet/`
-  - `sender_helmet.ino`
-- `Receiver Helmet/`
-  - `receiver_vehicle.ino` (based on your editor context)
+The system consists of two modules:
 
-## Prerequisites
+1. **Helmet Module (Sender)**
+   - Installed inside the rider's helmet.
+   - Detect alcohol from rider breath.
+   - Detect crashes or heavy shaking.
+   - Send alert message to vehicle system.
+   - Sensors used:
+     - MPU6050 → Crash detection
+     - MQ-3 Gas Sensor → Alcohol detection
 
-- Arduino IDE (or PlatformIO)
-- ESP32 board support installed (e.g. `ESP32 Dev Module`)
-- Libraries:
-  - `Adafruit MPU6050`
-  - `Adafruit Unified Sensor`
-  - `Wire` (core)
-  - `WiFi` (ESP32 core)
+2. **Vehicle Module (Receiver)**
+   - Installed on the bike/vehicle.
+   - Receive alerts from helmet.
+   - Stop engine (simulated using servo motor).
+   - Display alerts on LCD.
+   - Activate buzzer and LEDs.
+   - Components used:
+     - ESP32
+     - Servo Motor
+     - I2C LCD Display
+     - Buzzer
+     - LED Indicators
 
-## Hardware
+## 📡 Communication
 
-### Sender Helmet
+The helmet ESP32 connects to the vehicle ESP32 via WiFi hotspot.
 
-- ESP32 (or compatible)
-- MPU-6050:
-  - `SDA` -> GPIO 21
-  - `SCL` -> GPIO 22
-  - `VCC` -> 3.3V
-  - `GND` -> GND
-- MQ-3:
-  - `A0` -> GPIO 34
-  - `VCC` -> 5V (or 3.3V per module spec)
-  - `GND` -> GND
-- LED on `GPIO 2` (built-in)
+Protocol: UDP (User Datagram Protocol)
 
-### Receiver Helmet
+Network configuration:
 
-- ESP32 (or compatible)
-- (Add display/buzzer if required by your receiver code)
+- SSID: HELMET_ALERT_SYSTEM
+- Password: stopnow123
+- Port: 12345
+- Receiver IP: 192.168.4.1
 
-## Configuration
+## 🧰 Hardware Components
 
-In `Sender Helmet/sender_helmet.ino`:
+| Component | Quantity |
+| --- | --- |
+| ESP32 Development Board | 2 |
+| MPU6050 Accelerometer | 1 |
+| MQ3 Alcohol Sensor | 1 |
+| Servo Motor | 1 |
+| 16x2 I2C LCD Display | 1 |
+| Buzzer | 1 |
+| LEDs | 2 |
+| Resistors | As required |
+| Breadboard | 1 |
+| Jumper Wires | Multiple |
 
-- SSID: `HELMET_ALERT_SYSTEM`
-- Password: `stopnow123`
-- Receiver IP: `192.168.4.1`
-- UDP Port: `12345`
-- Alcohol threshold: `2100`
-- Shake threshold: `25.0`
+## ⚙️ Working Principle
 
-Adjust as needed.
+### Normal Operation
 
-## Upload Steps
+Helmet ESP32 continuously monitors:
+- Acceleration values
+- Alcohol sensor readings
 
-1. Open `sender_helmet.ino` in Arduino IDE.
-2. Set board to `ESP32 Dev Module`.
-3. Select correct COM port.
-4. Verify then Upload.
-5. Repeat for `receiver_vehicle.ino` in `Receiver Helmet`.
+Vehicle ESP32 keeps the engine running (servo movement).
+LCD shows:
+- SYSTEM ACTIVE
+- ENGINE RUNNING
 
-## Debug
+### Alcohol Detection
 
-- Use Serial Monitor at `115200`.
-- Ensure both devices are on same Wi-Fi network (or AP/Station pair).
-- If header errors (`Wire.h`, `Adafruit_MPU6050.h`, `WiFi.h`) appear, check board type + install missing libraries.
+If alcohol level exceeds threshold:
+- ALCOHOL_THRESHOLD = 2100
+Actions triggered:
+- Alert sent to vehicle
+- Engine stops
+- LCD shows alert
+- Buzzer beeps
+- Alcohol LED lights up
 
-## Usage
+LCD display:
+- ALCOHOL ALERT!
+- ENGINE LOCKED
 
-- Wear/attach Sender sensors.
-- Trigger a shake threshold or alcohol event.
-- Sender sends alert packet to receiver via UDP.
-- Receiver reports alert (Serial/UI).
+### Crash Detection
 
-## Notes
+Crash is detected using total acceleration magnitude.
+If acceleration exceeds threshold:
+- SHAKE_THRESHOLD = 25.0
+Actions triggered:
+- Alert sent to vehicle
+- Engine stops
+- Crash LED turns on
+- Buzzer beeps
+- LCD shows crash message
 
-- `receiverIP` can be changed to dynamic host if using existing AP with DHCP.
-- Cooldown prevents multiple alerts in rapid sequence.
+LCD display:
+- CRASH DETECTED!
+- STOPPING...
 
----
+## 🔧 Software Libraries Used
+
+Install the following Arduino libraries before compiling:
+
+- Adafruit MPU6050
+- Adafruit Unified Sensor
+- ESP32Servo
+- LiquidCrystal_I2C
+- WiFi
+- WiFiUdp
+- Wire
+
+## 💻 Installation
+
+1. Clone Repository
+
+`ash
+git clone https://github.com/yourusername/smart-helmet-system.git
+`
+
+2. Open in Arduino IDE
+
+Open these files:
+- sender_helmet/sender_helmet.ino
+- receiver_vehicle/receiver_vehicle.ino
+
+3. Upload Code
+
+Upload to two ESP32 boards:
+
+| Board | Code |
+|---|---|
+| Helmet ESP32 | sender_helmet.ino |
+| Vehicle ESP32 | receiver_vehicle.ino |
+
+## 📁 Project Structure
+
+`
+smart-helmet-system
+│
+├── sender_helmet
+│   └── sender_helmet.ino
+│
+├── receiver_vehicle
+│   └── receiver_vehicle.ino
+│
+├── images
+│   └── prototype.jpg
+│
+└── README.md
+`
+
+## 🖼️ Future Improvements
+
+Possible upgrades:
+- GPS accident location tracking
+- GSM module for emergency SMS
+- Mobile application integration
+- Helmet wearing detection
+- Cloud-based monitoring
+
+## 👨‍💻 Author
+
+Agastya Gupta
+
+B.Tech Electronics and Communication Engineering
+
+## 📜 License
+
+This project is open source and available under the MIT License.
+
+⭐ If you like this project, consider giving it a star on GitHub! 
