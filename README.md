@@ -150,7 +150,7 @@ Upload to two ESP32 boards:
 
 ## 📁 Project Structure
 
-`
+```
 smart-helmet-system
 │
 ├── sender_helmet
@@ -163,7 +163,7 @@ smart-helmet-system
 │   └── prototype.jpg
 │
 └── README.md
-`
+```
 
 ## 🖼️ Future Improvements
 
